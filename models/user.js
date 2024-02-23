@@ -76,6 +76,15 @@ userSchema.pre('save',async function(next){
     next();
 });
 
+userSchema.pre('save',async function(next){
+    if(!this.isModified("password")){
+       return next();
+    }
+    const salt=await bcrypt.genSalt(12);
+    this.password= await bcrypt.hash(this.otp,salt);
+    next();
+});
+
 
 userSchema.methods.createPasswordResetToken= function(){
 
@@ -83,6 +92,10 @@ userSchema.methods.createPasswordResetToken= function(){
     this.passwordResetToken=crypto.createHash("sha256").update(resetToken).digest("hex");
     this.passwordResetExpires=Date.now()+10*60*1000;
     return resetToken;
+}
+
+userSchema.methods.changedPasswordAfter= function(timestamp){
+    return (timestamp < this.passwordChangedAt);
 }
 
 const User=mongoose.model("User",userSchema);

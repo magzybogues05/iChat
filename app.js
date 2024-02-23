@@ -8,6 +8,7 @@ const xss=require('xss');
 // const {chats}= require('./data/data');
 const dotenv=require('dotenv');
 const cors = require('cors');
+const routes =require('./Routes/index');
 
 const http=require('http');
 const { mongo } = require('mongoose');
@@ -46,7 +47,7 @@ const limiter=rateLimit({
     message:"Rate Limit exceed..Try again after an hour"
 });
 
-app.use("/tawk",limiter);
+app.use("/ichat",limiter);
 
 
 
@@ -80,7 +81,7 @@ connectDB();
 //     res.send(singleChat);
 // })
 
-// app.use('/api/user',userRoutes);
+app.use('/api/v1',routes);
 
 const PORT=process.env.PORT || 5000;
 
